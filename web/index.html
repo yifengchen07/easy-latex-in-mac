@@ -16,8 +16,16 @@
         <label for="source">LaTeX 公式</label>
         <button id="read" type="button" class="link" disabled>读取所选公式</button>
       </div>
-      <textarea id="source" rows="5" maxlength="4008" spellcheck="false" autocapitalize="off"
+      <textarea id="source" rows="5" maxlength="12000" spellcheck="false" autocapitalize="off"
         autocomplete="off" placeholder="\frac{a}{b} = x"></textarea>
+
+      <details id="preamble-section">
+        <summary>导言区</summary>
+        <textarea id="preamble" rows="3" maxlength="12000" aria-label="LaTeX 导言区"
+          spellcheck="false" autocapitalize="off" autocomplete="off"
+          placeholder="\usepackage{mathtools}"></textarea>
+        <p class="hint">在这里加载宏包或定义命令。导言区会随公式保存在文档中。</p>
+      </details>
 
       <div class="settings">
         <label class="font">字体
@@ -30,6 +38,7 @@
           <select id="style">
             <option value="inline">行内</option>
             <option value="display">行间</option>
+            <option value="raw">原样 LaTeX</option>
           </select>
         </label>
         <label>字号 (pt)
@@ -37,6 +46,7 @@
         </label>
       </div>
       <p id="font-note" class="hint" hidden>字母和数字用 Times New Roman，其余符号由 TeX Gyre Termes Math 补足。</p>
+      <p id="style-note" class="hint" hidden>请输入完整环境，普通数学内容用 \[ … \] 包起来。</p>
 
       <section aria-labelledby="preview-label">
         <div class="label-row">

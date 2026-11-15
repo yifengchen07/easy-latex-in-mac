@@ -5,6 +5,7 @@ import { FormulaError, renderFormula } from "./lib/latex.mjs";
 const host = "127.0.0.1";
 const port = 43127;
 const origin = "http://" + host + ":" + port;
+const maxRequestBytes = 96 * 1024;
 const files = new Map([
   ["/", ["index.html", "text/html; charset=utf-8"]],
   ["/app.mjs", ["app.mjs", "text/javascript; charset=utf-8"]],
@@ -29,7 +30,7 @@ async function readFormula(request) {
   const chunks = [];
   for await (const chunk of request) {
     length += chunk.length;
-    if (length > 25600) throw new FormulaError("输入过长。");
+    if (length > maxRequestBytes) throw new FormulaError("输入过长。");
     chunks.push(chunk);
   }
   try {
@@ -58,7 +59,7 @@ const server = createServer({ requestTimeout: 20_000 }, async (request, response
         json(response, 403, { error: "请从 Easy LaTeX 任务窗格发起排版。" });
         return;
       }
-      if (Number(request.headers["content-length"]) > 25600) {
+      if (Number(request.headers["content-length"]) > maxRequestBytes) {
         json(response, 413, { error: "输入过长。" });
         return;
       }

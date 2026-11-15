@@ -1,0 +1,26 @@
+(version 1)
+(deny default)
+
+(allow process-exec (literal (param "PROGRAM")))
+(allow sysctl-read)
+(allow file-read-metadata)
+(allow file-read* file-map-executable
+  (literal "/")
+  (subpath (param "JOB"))
+  (subpath (param "TEX_ROOT"))
+  (subpath (param "TEX_LOCAL"))
+  (subpath "/System/Library")
+  (subpath "/Library/Fonts")
+  (subpath "/usr/lib")
+  (subpath "/private/var/db/dyld")
+  (literal "/dev/null")
+  (literal "/dev/urandom"))
+(allow file-write*
+  (subpath (param "JOB"))
+  (literal "/dev/null"))
+
+; XeTeX's Apple font lookup can use the system font service.
+(allow mach-lookup
+  (global-name "com.apple.fonts")
+  (global-name "com.apple.FontObjectsServer")
+  (global-name "com.apple.fontd"))

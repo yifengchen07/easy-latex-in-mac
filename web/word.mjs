@@ -40,17 +40,26 @@ export async function renderPng(formula) {
 }
 
 export function formulaFromAltText(title, description) {
+  if (!title || !description?.startsWith(sourcePrefix)) return null;
   const [prefix, version, id, font, style, size] = title.split("|");
-  if (prefix !== titlePrefix || version !== "1" || !id || !description.startsWith(sourcePrefix)) return null;
-  if (!["cm", "times"].includes(font) || !["inline", "display"].includes(style) ||
+  if (prefix !== titlePrefix || !["1", "2"].includes(version) || !id) return null;
+  if (!["cm", "times"].includes(font) || !["inline", "display", "raw"].includes(style) ||
     !/^(?:[89]|[12][0-9]|3[0-6])$/.test(size)) return null;
-  return { title, font, style, size: Number(size), source: description.slice(sourcePrefix.length) };
+  const stored = description.slice(sourcePrefix.length);
+  if (version === "1") return { title, font, style, size: Number(size), source: stored, preamble: "" };
+  try {
+    const { source, preamble } = JSON.parse(stored);
+    if (typeof source !== "string" || typeof preamble !== "string") return null;
+    return { title, font, style, size: Number(size), source, preamble };
+  } catch {
+    return null;
+  }
 }
 
 export function formulaOoxml(formula, png, id) {
-  const { font, style, size, width, height, depth, source, svg } = formula;
-  const title = [titlePrefix, "1", id, font, style, size].join("|");
-  const description = escapeXml(sourcePrefix + source);
+  const { font, style, size, width, height, depth, source, preamble = "", svg } = formula;
+  const title = [titlePrefix, "2", id, font, style, size].join("|");
+  const description = escapeXml(sourcePrefix + JSON.stringify({ source, preamble }));
   const svgData = btoa(Array.from(new TextEncoder().encode(svg), (byte) => String.fromCharCode(byte)).join(""));
   const cx = Math.round(width * 12700);
   const cy = Math.round(height * 12700);

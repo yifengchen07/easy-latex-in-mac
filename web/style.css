@@ -19,6 +19,9 @@ label, h2 { font-weight: 600; }
 textarea, input, select, button { font: inherit; color: inherit; }
 textarea, input, select { background: #fff; border: 1px solid var(--edge); border-radius: 6px; }
 textarea { display: block; width: 100%; padding: 9px; resize: vertical; font: 14px/1.5 ui-monospace, SFMono-Regular, monospace; }
+details { margin-top: 10px; }
+summary { cursor: pointer; font-weight: 600; }
+details textarea { margin-top: 6px; }
 .settings { display: grid; grid-template-columns: minmax(0, 1fr) 5.5rem; gap: 8px; margin-top: 14px; }
 .font { grid-column: 1 / -1; }
 input, select { display: block; width: 100%; min-height: 36px; padding: 5px 7px; margin-top: 4px; }

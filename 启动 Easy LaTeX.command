@@ -18,6 +18,11 @@ for tool in latex xelatex dvisvgm; do
   fi
 done
 
+if [[ ! -x /usr/bin/sandbox-exec || ! -x /usr/bin/xsltproc ]]; then
+  print -u2 "这台 Mac 缺少隔离排版所需的系统工具。"
+  exit 1
+fi
+
 target="$HOME/Library/Containers/com.microsoft.Word/Data/Documents/wef"
 mkdir -p "$target"
 if ! cmp -s manifest.xml "$target/EasyLaTeX.xml"; then

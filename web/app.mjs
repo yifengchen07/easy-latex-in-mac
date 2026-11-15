@@ -2,6 +2,8 @@ import { previewUrl, readSelection, renderPng, writeFormula } from "./word.mjs";
 
 const form = document.querySelector("#equation");
 const source = document.querySelector("#source");
+const preamble = document.querySelector("#preamble");
+const preambleSection = document.querySelector("#preamble-section");
 const font = document.querySelector("#font");
 const style = document.querySelector("#style");
 const size = document.querySelector("#size");
@@ -12,7 +14,9 @@ const preview = document.querySelector("#preview");
 const previewImage = document.querySelector("#preview-image");
 const previewPlaceholder = document.querySelector("#preview-placeholder");
 const fontNote = document.querySelector("#font-note");
+const styleNote = document.querySelector("#style-note");
 const status = document.querySelector("#status");
+const editors = [source, preamble, font, style, size];
 
 let wordReady = false;
 let writing = false;
@@ -51,7 +55,7 @@ function requestFormula(input, signal) {
 }
 
 function renderCurrent() {
-  const input = { source: source.value, font: font.value, style: style.value, size: size.valueAsNumber };
+  const input = { source: source.value, preamble: preamble.value, font: font.value, style: style.value, size: size.valueAsNumber };
   if (!source.value.trim()) return Promise.reject(new Error("请输入 LaTeX 公式。"));
   if (!size.validity.valid) return Promise.reject(new Error("请输入 8–36 pt 的整数字号。"));
   const key = JSON.stringify(input);
@@ -119,7 +123,7 @@ async function insertOrUpdate(replaceTitle) {
   writing = true;
   clearTimeout(timer);
   syncButtons();
-  for (const field of [source, font, style, size]) field.disabled = true;
+  for (const field of editors) field.disabled = true;
   setStatus("正在排版并写入 Word…");
   try {
     const formula = await renderCurrent();
@@ -131,14 +135,18 @@ async function insertOrUpdate(replaceTitle) {
     setStatus(error.message || "Word 无法写入公式，请检查文档是否可编辑。", true);
   } finally {
     writing = false;
-    for (const field of [source, font, style, size]) field.disabled = false;
+    for (const field of editors) field.disabled = false;
     syncButtons();
   }
 }
 
 source.addEventListener("input", queuePreview);
+preamble.addEventListener("input", queuePreview);
 size.addEventListener("input", queuePreview);
-style.addEventListener("change", queuePreview);
+style.addEventListener("change", () => {
+  styleNote.hidden = style.value !== "raw";
+  queuePreview();
+});
 font.addEventListener("change", () => {
   fontNote.hidden = font.value !== "times";
   queuePreview();
@@ -167,10 +175,13 @@ read.addEventListener("click", async () => {
       return;
     }
     source.value = formula.source;
+    preamble.value = formula.preamble;
+    preambleSection.open = Boolean(formula.preamble);
     font.value = formula.font;
     style.value = formula.style;
     size.value = formula.size;
     fontNote.hidden = font.value !== "times";
+    styleNote.hidden = style.value !== "raw";
     editTitle = formula.title;
     queuePreview();
     source.focus();
