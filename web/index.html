@@ -18,12 +18,20 @@
       </div>
       <textarea id="source" rows="5" maxlength="12000" spellcheck="false" autocapitalize="off"
         autocomplete="off" placeholder="\frac{a}{b} = x"></textarea>
+      <div class="clipboard-actions" role="group" aria-label="公式剪贴板">
+        <button type="button" class="link" data-clipboard="copy" aria-controls="source">复制</button>
+        <button type="button" class="link" data-clipboard="paste" aria-controls="source">粘贴</button>
+      </div>
 
       <details id="preamble-section">
         <summary>导言区</summary>
         <textarea id="preamble" rows="3" maxlength="12000" aria-label="LaTeX 导言区"
           spellcheck="false" autocapitalize="off" autocomplete="off"
           placeholder="\usepackage{mathtools}"></textarea>
+        <div class="clipboard-actions" role="group" aria-label="导言区剪贴板">
+          <button type="button" class="link" data-clipboard="copy" aria-controls="preamble">复制</button>
+          <button type="button" class="link" data-clipboard="paste" aria-controls="preamble">粘贴</button>
+        </div>
         <p class="hint">在这里加载宏包或定义命令。导言区会随公式保存在文档中。</p>
       </details>
 

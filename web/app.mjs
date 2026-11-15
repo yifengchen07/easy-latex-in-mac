@@ -17,6 +17,7 @@ const fontNote = document.querySelector("#font-note");
 const styleNote = document.querySelector("#style-note");
 const status = document.querySelector("#status");
 const editors = [source, preamble, font, style, size];
+const clipboardButtons = document.querySelectorAll("[data-clipboard]");
 
 let wordReady = false;
 let writing = false;
@@ -36,6 +37,55 @@ function syncButtons() {
   read.disabled = !wordReady || writing;
   update.hidden = !editTitle;
   update.disabled = !wordReady || writing || !source.value.trim();
+  for (const button of clipboardButtons) button.disabled = writing;
+}
+
+async function clipboardRequest(action, text) {
+  const response = await fetch("/clipboard", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Easy-LaTeX": "1" },
+    body: JSON.stringify({ action, text }),
+  }).catch(() => {
+    throw new Error("无法连接本机服务，请重新启动 Easy LaTeX。");
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  return result;
+}
+
+async function editClipboard(field, action, selectionOnly = false) {
+  if (field.disabled) return;
+  try {
+    if (action === "copy") {
+      const selected = field.value.slice(field.selectionStart, field.selectionEnd);
+      const text = selected || (selectionOnly ? "" : field.value);
+      if (text) {
+        await clipboardRequest("copy", text);
+        setStatus("已复制到剪贴板。");
+      }
+      return;
+    }
+
+    field.focus();
+    const { value, selectionStart, selectionEnd } = field;
+    const { text } = await clipboardRequest("paste");
+    if (field.disabled || document.activeElement !== field || field.value !== value ||
+      field.selectionStart !== selectionStart || field.selectionEnd !== selectionEnd) return;
+    const pasted = text.replace(/\r\n?/g, "\n");
+    if (value.length - (selectionEnd - selectionStart) + pasted.length > field.maxLength) {
+      throw new Error("粘贴后会超过输入框的字符上限，请缩短文字。");
+    }
+    // The WebView's editing command keeps the paste in the text field's undo history.
+    try {
+      if (document.execCommand("insertText", false, pasted)) return;
+    } catch {
+      // Some embedded browsers disable this command.
+    }
+    field.setRangeText(pasted, selectionStart, selectionEnd, "end");
+    field.dispatchEvent(new Event("input", { bubbles: true }));
+  } catch (error) {
+    setStatus(error.message, true);
+  }
 }
 
 function requestFormula(input, signal) {
@@ -142,6 +192,20 @@ async function insertOrUpdate(replaceTitle) {
 
 source.addEventListener("input", queuePreview);
 preamble.addEventListener("input", queuePreview);
+for (const button of clipboardButtons) {
+  const field = document.getElementById(button.getAttribute("aria-controls"));
+  button.addEventListener("click", () => editClipboard(field, button.dataset.clipboard));
+}
+for (const field of [source, preamble]) {
+  field.addEventListener("keydown", (event) => {
+    if (event.isComposing || !(event.metaKey || event.ctrlKey) || event.altKey) return;
+    const key = event.key.toLowerCase();
+    if (key !== "c" && key !== "v") return;
+    event.preventDefault();
+    event.stopPropagation();
+    editClipboard(field, key === "c" ? "copy" : "paste", true);
+  }, { capture: true });
+}
 size.addEventListener("input", queuePreview);
 style.addEventListener("change", () => {
   styleNote.hidden = style.value !== "raw";

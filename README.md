@@ -10,6 +10,8 @@
 2. 打开 Word 空白文档，选择 **开始 → 加载项 → 开发人员加载项 → Easy LaTeX**。首次安装后如果菜单没有出现，退出 Word 并重新打开。
 3. 输入公式、选字体和字号，确认预览后点 **插入公式**。也可以在输入框按 **⌘ Return**。
 
+公式框和导言区下方都有 **复制** 和 **粘贴** 按钮。复制有选区时取选中的文字，否则复制整栏。粘贴会插到光标处，或替换选中的文字。
+
 终端也可以运行 `npm start` 来启动服务。手工安装时，把 `manifest.xml` 复制到 `~/Library/Containers/com.microsoft.Word/Data/Documents/wef/`。加载路径见 [微软的 Mac 版 Word 加载项文档](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/sideload-an-office-add-in-on-mac)。
 
 从第一版升级时，在原来的终端窗口按 **Control+C**，重新双击启动文件，再关闭并重新打开 Word 里的 Easy LaTeX 窗格。

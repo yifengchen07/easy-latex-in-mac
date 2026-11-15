@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
+import { ClipboardError, useClipboard } from "./lib/clipboard.mjs";
 import { FormulaError, renderFormula } from "./lib/latex.mjs";
 
 const host = "127.0.0.1";
@@ -25,7 +26,7 @@ function json(response, status, value) {
   response.end(JSON.stringify(value));
 }
 
-async function readFormula(request) {
+async function readJson(request) {
   let length = 0;
   const chunks = [];
   for await (const chunk of request) {
@@ -36,7 +37,7 @@ async function readFormula(request) {
   try {
     return JSON.parse(Buffer.concat(chunks).toString("utf8"));
   } catch {
-    throw new FormulaError("公式请求的格式有误。");
+    throw new FormulaError("请求的格式有误。");
   }
 }
 
@@ -52,15 +53,19 @@ const server = createServer({ requestTimeout: 20_000 }, async (request, response
   try {
     // Word adds host information to the task pane URL as query parameters.
     const asset = files.get(request.url.split("?", 1)[0]);
-    if (request.method === "POST" && request.url === "/render") {
+    if (request.method === "POST" && ["/render", "/clipboard"].includes(request.url)) {
       if (request.headers.origin !== origin ||
         request.headers["content-type"] !== "application/json" ||
         request.headers["x-easy-latex"] !== "1") {
-        json(response, 403, { error: "请从 Easy LaTeX 任务窗格发起排版。" });
+        json(response, 403, { error: "请从 Easy LaTeX 任务窗格操作。" });
         return;
       }
       if (Number(request.headers["content-length"]) > maxRequestBytes) {
         json(response, 413, { error: "输入过长。" });
+        return;
+      }
+      if (request.url === "/clipboard") {
+        json(response, 200, await useClipboard(await readJson(request)));
         return;
       }
       if (activeRenders >= 2) {
@@ -69,7 +74,7 @@ const server = createServer({ requestTimeout: 20_000 }, async (request, response
       }
       activeRenders++;
       try {
-        json(response, 200, await renderFormula(await readFormula(request)));
+        json(response, 200, await renderFormula(await readJson(request)));
       } finally {
         activeRenders--;
       }
@@ -82,7 +87,7 @@ const server = createServer({ requestTimeout: 20_000 }, async (request, response
       json(response, 404, { error: "页面不存在。" });
     }
   } catch (error) {
-    const status = error instanceof FormulaError ? 422 : 500;
+    const status = error instanceof FormulaError || error instanceof ClipboardError ? 422 : 500;
     if (status === 500) console.error(error.message);
     json(response, status, { error: error.message });
   }
