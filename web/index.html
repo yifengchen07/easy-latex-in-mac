@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Easy LaTeX</title>
+  <link rel="stylesheet" href="/style.css">
+  <script async src="https://officeapis.public.onecdn.static.microsoft/1/office.js"></script>
+  <script type="module" src="/app.mjs"></script>
+</head>
+<body>
+  <main>
+    <h1>Easy LaTeX</h1>
+    <form id="equation" novalidate>
+      <div class="label-row">
+        <label for="source">LaTeX 公式</label>
+        <button id="read" type="button" class="link" disabled>读取所选公式</button>
+      </div>
+      <textarea id="source" rows="5" maxlength="4008" spellcheck="false" autocapitalize="off"
+        autocomplete="off" placeholder="\frac{a}{b} = x"></textarea>
+
+      <div class="settings">
+        <label class="font">字体
+          <select id="font">
+            <option value="cm">Computer Modern</option>
+            <option value="times">Times New Roman</option>
+          </select>
+        </label>
+        <label>数学样式
+          <select id="style">
+            <option value="inline">行内</option>
+            <option value="display">行间</option>
+          </select>
+        </label>
+        <label>字号 (pt)
+          <input id="size" type="number" min="8" max="36" step="1" value="12" required>
+        </label>
+      </div>
+      <p id="font-note" class="hint" hidden>字母和数字用 Times New Roman，其余符号由 TeX Gyre Termes Math 补足。</p>
+
+      <section aria-labelledby="preview-label">
+        <div class="label-row">
+          <h2 id="preview-label">预览</h2>
+          <button id="preview-button" type="submit" class="link">刷新</button>
+        </div>
+        <div id="preview" class="preview" aria-busy="false">
+          <span id="preview-placeholder">公式预览将显示在此处</span>
+          <img id="preview-image" alt="LaTeX 公式预览" hidden>
+        </div>
+      </section>
+      <div class="actions">
+        <button id="insert" type="button" class="primary" disabled>插入公式</button>
+        <button id="update" type="button" disabled hidden>更新所选公式</button>
+      </div>
+      <p class="hint">公式以矢量图嵌入文档。选中已插入的公式即可读取源码并更新。</p>
+      <p id="status" role="status" aria-live="polite">正在连接 Word…</p>
+    </form>
+  </main>
+</body>
+</html>

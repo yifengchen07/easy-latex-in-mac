@@ -1,0 +1,50 @@
+:root {
+  font: 14px/1.45 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  color: #18241e;
+  background: #f8faf9;
+  --ink: #18241e;
+  --muted: #526059;
+  --edge: #bdc9c0;
+  --green: #1e6248;
+  --focus: #29865f;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+main { padding: 18px; max-width: 580px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 18px; letter-spacing: -.035em; }
+h2 { margin: 0; font-size: inherit; }
+label, h2 { font-weight: 600; }
+.label-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+textarea, input, select, button { font: inherit; color: inherit; }
+textarea, input, select { background: #fff; border: 1px solid var(--edge); border-radius: 6px; }
+textarea { display: block; width: 100%; padding: 9px; resize: vertical; font: 14px/1.5 ui-monospace, SFMono-Regular, monospace; }
+.settings { display: grid; grid-template-columns: minmax(0, 1fr) 5.5rem; gap: 8px; margin-top: 14px; }
+.font { grid-column: 1 / -1; }
+input, select { display: block; width: 100%; min-height: 36px; padding: 5px 7px; margin-top: 4px; }
+section { margin-top: 16px; }
+.preview {
+  display: grid;
+  place-items: center;
+  min-height: 90px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--muted);
+}
+.preview img { max-width: 100%; height: auto; }
+.preview[aria-busy="true"] { opacity: .6; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+button { border: 1px solid var(--edge); background: #fff; border-radius: 6px; padding: 6px 9px; cursor: pointer; font-weight: 600; }
+button:hover:not(:disabled) { border-color: var(--green); }
+button:disabled { opacity: .5; cursor: default; }
+button.primary { color: #fff; border-color: var(--green); background: var(--green); }
+button.primary:hover:not(:disabled) { background: #164b37; }
+button.link { padding: 1px 0; border: 0; background: transparent; color: var(--green); }
+button.link:hover:not(:disabled) { text-decoration: underline; }
+button:focus-visible, textarea:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.hint, #status { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+#status.error { color: #a02721; }
