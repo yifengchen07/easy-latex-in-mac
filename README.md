@@ -6,11 +6,11 @@
 
 ## 1. 准备环境
 
-| 需要什么 | 如何安装或确认 |
-| --- | --- |
+| 需要什么                                 | 如何安装或确认                                                                                                                                                                                           |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Mac 版 Microsoft Word 桌面应用** | 在 Word 的 **开始** 选项卡找到 **加载项**。当前安装方式使用本地开发人员加载项。 [微软安装说明](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/sideload-an-office-add-in-on-mac) |
-| **Node.js 22 或更新版本** | 在官方下载页选择 **LTS** 和 macOS 的 `.pkg` 安装包。装好后打开一个新的终端窗口，运行 `node -v`。 [下载 Node.js](https://nodejs.org/en/download) |
-| **完整的 MacTeX** | 在官网选择 **MacTeX Download**，下载并运行 `.pkg`。已有完整 MacTeX 的用户可跳过安装。 [下载 MacTeX](https://tug.org/mactex/) |
+| **Node.js 22 或更新版本**          | 在官方下载页选择 **LTS** 和 macOS 的 `.pkg` 安装包。装好后打开一个新的终端窗口，运行 `node -v`。 [下载 Node.js](https://nodejs.org/en/download)                                                 |
+| **完整的 MacTeX**                  | 在官网选择 **MacTeX Download**，下载并运行 `.pkg`。已有完整 MacTeX 的用户可跳过安装。 [下载 MacTeX](https://tug.org/mactex/)                                                                      |
 
 已测试的开发环境为 Apple 芯片 Mac、macOS 15.3、Word 16.98、Node.js 24 和 MacTeX 2025。Windows 版、网页版和 iPad 版 Word 暂无安装流程。
 
@@ -49,7 +49,6 @@ zsh "./启动 Easy LaTeX.command"
    ```latex
    \frac{x_i+\alpha}{\sqrt{1+y^2}}
    ```
-
 3. 选择字体、数学样式和字号。确认预览后点 **插入公式**，或在公式框按 **⌘ Return**。
 4. 保存为 `.docx`。要修改公式时，在 Word 正文里选中它，点 **读取所选公式**，改完后点 **更新所选公式**。
 
@@ -81,15 +80,15 @@ zsh "./启动 Easy LaTeX.command"
 
 ## 5. 安装排错
 
-| 现象 | 处理方法 |
-| --- | --- |
-| 终端提示安装 Node.js | 在新终端运行 `node -v`。确认版本至少为 22。如果终端找得到 Node.js、双击却找不到，在项目目录用上面的 `zsh` 命令启动。 |
-| 找不到 `latex`、`xelatex` 或 `dvisvgm` | 按「检查环境」逐项检查 `/Library/TeX/texbin`，确认激活的是完整的 MacTeX。 |
-| Word 菜单里没有 Easy LaTeX | 确认启动文件已运行，以及 `~/Library/Containers/com.microsoft.Word/Data/Documents/wef/EasyLaTeX.xml` 存在。保存文档，用 **⌘Q** 退出 Word 后重开。 |
-| 窗格白屏、提示「页面不存在」或无法连接 | 停止旧服务，重新运行启动文件并打开窗格。如果仍有问题，可在浏览器打开 [本机预览页](http://127.0.0.1:43127/)。浏览器里可以检查排版，插入功能在 Word 中使用。若网页能打开但 Word 仍连不上，检查当前网络能否访问 [微软的 Office.js 服务](https://officeapis.public.onecdn.static.microsoft/1/office.js)。 |
-| 终端提示 `EADDRINUSE` | 先检查是否已经有一个 Easy LaTeX 终端窗口在运行。按 **Control+C** 停止旧实例，再启动新版。 |
-| LaTeX 提示命令未定义或缺少宏包 | 查看报错的行号。把 `\usepackage{…}` 放进导言区，并确认该宏包已安装在当前 MacTeX 中。 |
-| 复制或粘贴快捷键无响应 | 使用公式框或导言区下方的 **复制**、**粘贴** 按钮。 |
+| 现象                                         | 处理方法                                                                                                                                                                                                                                                                                            |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 终端提示安装 Node.js                         | 在新终端运行 `node -v`。确认版本至少为 22。如果终端找得到 Node.js、双击却找不到，在项目目录用上面的 `zsh` 命令启动。                                                                                                                                                                            |
+| 找不到 `latex`、`xelatex` 或 `dvisvgm` | 按「检查环境」逐项检查 `/Library/TeX/texbin`，确认激活的是完整的 MacTeX。                                                                                                                                                                                                                         |
+| Word 菜单里没有 Easy LaTeX                   | 确认启动文件已运行，以及 `~/Library/Containers/com.microsoft.Word/Data/Documents/wef/EasyLaTeX.xml` 存在。保存文档，用 **⌘Q** 退出 Word 后重开。                                                                                                                                           |
+| 窗格白屏、提示「页面不存在」或无法连接       | 停止旧服务，重新运行启动文件并打开窗格。如果仍有问题，可在浏览器打开 [本机预览页](http://127.0.0.1:43127/)。浏览器里可以检查排版，插入功能在 Word 中使用。若网页能打开但 Word 仍连不上，检查当前网络能否访问 [微软的 Office.js 服务](https://officeapis.public.onecdn.static.microsoft/1/office.js)。 |
+| 终端提示 `EADDRINUSE`                      | 先检查是否已经有一个 Easy LaTeX 终端窗口在运行。按 **Control+C** 停止旧实例，再启动新版。                                                                                                                                                                                                     |
+| LaTeX 提示命令未定义或缺少宏包               | 查看报错的行号。把 `\usepackage{…}` 放进导言区，并确认该宏包已安装在当前 MacTeX 中。                                                                                                                                                                                                             |
+| 复制或粘贴快捷键无响应                       | 使用公式框或导言区下方的 **复制**、**粘贴** 按钮。                                                                                                                                                                                                                                      |
 
 如果遇到其他问题，可在 [GitHub Issues](https://github.com/yifengchen07/easy-latex-in-mac/issues) 提供 macOS 版本、Word 版本、终端或侧栏的报错，以及能复现问题的最短公式。
 
@@ -97,4 +96,6 @@ zsh "./启动 Easy LaTeX.command"
 
 公式和导言区通过本机服务 `127.0.0.1:43127` 交给 TeX 排版。Word 窗格会加载微软提供的 Office.js，因此打开窗格时需能访问微软的服务。分享 `.docx` 时，公式源码和导言区也会随嵌入公式一起分享。
 
-项目代码采用 [MIT 许可证](LICENSE)。开发者可在 macOS 的普通终端运行 `npm test`。
+项目源码公开，可免费用于学习、研究和工作，也可按许可修改和免费分享。自引入组合许可的提交起，项目采用 [MIT + Commons Clause 1.0](LICENSE)。向他人收费提供价值全部或主要来自 Easy LaTeX 功能的产品或服务，需要另行取得授权。 [Commons Clause 原文与 FAQ](https://commonsclause.com/)
+
+开发者可在 macOS 的普通终端运行 `npm test`。
